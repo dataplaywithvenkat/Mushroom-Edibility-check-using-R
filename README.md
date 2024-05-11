@@ -32,3 +32,70 @@ str(data)
 ##  $ Odor      : chr "Pungent" "Almond" "Anise" "Pungent" ...
 ##  $ Height    : chr "Tall" "Short" "Tall" "Short" ...
 
+| Variable   | Description                                           | Data Type              |
+|------------|-------------------------------------------------------|------------------------|
+| Edible     | Indicates if a mushroom is edible or not              | Nominal, Categorical   |
+| CapShape   | Provides the shape of the mushroom cap                | Nominal, Categorical   |
+| CapSurface | Provides the surface texture of the mushroom cap      | Nominal, Categorical   |
+| CapColor   | Provides the color of the mushroom cap                | Nominal, Categorical   |
+| Odor       | Provides the odor or smell of the mushroom            | Nominal, Categorical   |
+| Height     | Specifies if the mushroom is tall or short            | Nominal, Categorical   |
+
+```
+## Exploratory Data Analysis
+
+### Edible
+
+The variable "Edible" consists of two main categories: Edible or Poisonous, with 4208 rows labeled as Edible and 3916 rows labeled as Poisonous.
+
+```r
+print(table(data$Edible))
+##
+## Edible    Poisonous
+##  4208       3916
+
+ggplot(data, aes(Edible))+geom_bar(fill = "#0073C2FF")
+```
+## CapShape
+
+The variable "CapShape" consists of 6 main categories: bell, conical, convex, flat, knobbed, and sunken. Among these, convex and flat are the most occurring cap shapes, while conical and sunken are the least occurring.
+
+```r
+table(data$CapShape)
+##
+## Bell   Conical   Convex   Flat   Knobbed   Sunken
+##  452        4      3656   3152      828       32
+
+ggplot(data, aes(CapShape))+geom_bar(fill = "#0073C2FF") 
+```
+
+## CapColor
+
+The variable "CapColor" consists of 10 different colors such as Brown, Buff, Cinnamon, etc. Most mushrooms are found to be brown or gray in color, while mushrooms with green and purple colors are very rare.
+
+```r
+table(data$CapColor)
+##
+## Brown  Buff Cinnamon  Gray Green  Pink Purple   Red White Yellow
+##  2284   168      44  1840    16   144     16  1500  1040   1072
+
+ggplot(data, aes(CapColor)) + geom_bar(fill = "#0073C2FF")
+
+```
+
+## CapSurface
+
+The variable "CapSurface" consists of 4 cap surface types: fibrous, grooves, scaly, and smooth. Mushrooms with a scaly surface are more common, while those with grooves are less common.
+
+```r
+table(data$CapSurface)
+##
+## Fibrous  Grooves   Scaly  Smooth
+##    2320        4    3244    2556
+
+ggplot(data, aes(CapSurface))+geom_bar(fill = "#0073C2FF") 
+
+```
+
+
+
