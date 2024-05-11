@@ -164,8 +164,7 @@ print(dim(test_data))
 ## [1] 2436 6
 ```
 from above code we can observe that dataset is split having 70% as training set and 30% is the testing set.
-We need to perform modelling for based on using few different columns below code will helps us to give different formulas as a input in here are
-are considering the Edible as a Traget variables and other columns as input variable.
+We need to perform modelling for based on using few different columns below code will helps us to give different formulas as a input in here are considering the Edible as a Traget variables and other columns as input variable.
 `Edible ~ CapColor` : for this formula we are using Edible as Target and CapColor as Input
 `Edible ~ CapSurface` : We are using only CapSurface as Input
 `Edible ~ CapShape` : We are using Capshape as Input
