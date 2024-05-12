@@ -480,8 +480,64 @@ Table: Prediction and Accuracy Decision tree with different splits
 
 from above output we can observe that the average accuracy for Decision tree is 98.8 for formula `Edible~.`
 
+# Random Forest
+Initially, we are ploting the Random forest model with our train data with number of trees as 500 to get an assumption and left the mtry as the
+default.
+```r
+model <- randomForest(Edible ~., data = train_data, ntree = 500)
+plot(model, col = c("blue", "green", "red"))
+```
+ from above graph we can observe
+that the error is getting decreased from number of trees as 100 I am using the number of trees as 100 as per the above graph once iot is done we
+need to consider the variable importance using Gini Impurity
+Below code plots the Variable importance using `varImpPlot()` funtion
+```r
+model <- randomForest(Edible ~ ., data = train_data, ntree = 100)
+# Create the variable importance plot
+varImpPlot(model)
+```
 
+The model is also considering the
+same Gini impurity with Odor as the heighest, Height as the lowest
+Algorithm:
+1. Initializing for loop to perform model with different formulas
+2. Training the model with randomForest() funtion with Train_Data, and with all the above formulas as specified, specifying ntree, mtry.
+3. Predicting the model on the Test_data, with type as class.
+4. finding the number of correctly predicted values, accuracy and initializing it to list for further analysis.
+```r
+rf_my_list <- c()
+rf_original <- c()
+rf_accuracy <- c()
+for (i in y){
+ model = randomForest(i, data = train_data, ntree = 100)
+ predictions <- predict(model, newdata = test_data, type = "class")
+ rf_my_list <- append(rf_my_list,sum(test_data$Edible==predictions))
+ rf_original <- append(rf_original,length(test_data$Edible))
+ rf_accuracy <- append(rf_accuracy,(sum(test_data$Edible == predictions) / length(test_data$Edible)))
+}
+```
+Output:
+Below code give the output of Random Forest algorithm in tabular form using Knitr varaiable and Dataframe.
+```r
+x <- "Edible ~ ."
+x1 <- "Edible ~ Odor"
+x2 <- "Edible ~ CapSurface+CapColor+CapShape"
+x3 <- "Edible ~ CapSurface+CapColor+CapShape+Odor"
+x4 <- "Edible ~ CapColor"
+x5 <- "Edible ~ CapSurface"
+x6 <- "Edible ~ CapShape"
+x7 <- "Edible ~ CapSurface+CapColor+CapShape+Height"
 
+# Create a data frame with the formulas and predictions
+z <- data.frame(Formula = c(x4,x5,x6,x7,x2,x1,x3,x),
+ Test_data = rf_original,
+ Predictions = rf_my_list,
+ Accuracy = rf_accuracy*100)
+
+# Print the table
+kable(z,format = "simple",caption = "Table 5: Prediction and Accuracy Random forest with different Formulas")
+```
+Table 5: Prediction and Accuracy Random forest with different Formulas
 
 
 
