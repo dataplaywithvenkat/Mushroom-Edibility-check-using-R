@@ -538,10 +538,108 @@ z <- data.frame(Formula = c(x4,x5,x6,x7,x2,x1,x3,x),
 kable(z,format = "simple",caption = "Table 5: Prediction and Accuracy Random forest with different Formulas")
 ```
 Table 5: Prediction and Accuracy Random forest with different Formulas
+| Formula                                  | Test Data | Predictions | Accuracy  |
+|------------------------------------------|-----------|-------------|-----------|
+| `Edible ~ CapColor`                       | 2436      | 1470        | 60.34%    |
+| `Edible ~ CapSurface`                     | 2436      | 1436        | 58.95%    |
+| `Edible ~ CapShape`                       | 2436      | 1377        | 56.53%    |
+| `Edible ~ CapSurface + CapColor + CapShape + Height` | 2436 | 1712    | 70.28%    |
+| `Edible ~ CapSurface + CapColor + CapShape` | 2436      | 1712        | 70.28%    |
+| `Edible ~ Odor`                           | 2436      | 2395        | 98.32%    |
+| `Edible ~ CapSurface + CapColor + CapShape + Odor` | 2436   | 2415        | 99.14%    |
+| `Edible ~ .`                              | 2436      | 2415        | 99.14%    |
 
+compared with the formula with Order as the input it is giving 98.8 accuracy, Using all the columns as input the Edible column is correctly predicted
+with 98.8% of accuracy.
 
+## Cross validation:
+Performing crass validation using different test and train splits.
+```r
+train_split = c(0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9)
+rf_accuracy_split = c()
+original_train_rf = c()
+original_test_rf = c() 
+my_list_rf = c()
+for (i in train_split){
+ train_index_rf <- createDataPartition(data$Edible, p = i, list = FALSE)
+ train_data_rf <- data[train_index_rf, ]
+ test_data_rf <- data[-train_index_rf, ]
+ model = randomForest(Edible ~ CapSurface+CapColor+CapShape+Odor, data = train_data_rf, ntree = 100)
+ predictions <- predict(model, newdata = test_data_rf, type = "class")
+ my_list_rf <- append(my_list_rf,sum(test_data_rf$Edible==predictions))
+ original_train_rf <- append(original_train_rf,length(train_data_rf$Edible))
+ original_test_rf <- append(original_test_rf,length(test_data_rf$Edible))
+ rf_accuracy_split <- append(rf_accuracy_split,(sum(test_data_rf$Edible == predictions) / length(test_data_rf$Edible)))
+}
+```
+```r
+# Create a data frame with the formulas and predictions
+z <- data.frame(train_split = train_split,
+ Train_Data = original_train_rf,
+ Test_data = original_test_rf,
+ Predictions = my_list_rf,
+ Accuracy = rf_accuracy_split*100)
+# Print the table
+kable(z,caption = "Table 6: Prediction and Accuracy Random Forest with different splits",format = 'simple')
+```
+Table 6: Prediction and Accuracy Random Forest with different splits
 
+| train_split | Train_Data | Test_data | Predictions | Accuracy  |
+|-------------|------------|-----------|-------------|-----------|
+| 0.50        | 4062       | 4062      | 4026        | 99.11%    |
+| 0.55        | 4469       | 3655      | 3626        | 99.21%    |
+| 0.60        | 4875       | 3249      | 3229        | 99.38%    |
+| 0.65        | 5282       | 2842      | 2813        | 98.98%    |
+| 0.70        | 5688       | 2436      | 2422        | 99.43%    |
+| 0.75        | 6093       | 2031      | 2011        | 99.02%    |
+| 0.80        | 6500       | 1624      | 1619        | 99.69%    |
+| 0.85        | 6906       | 1218      | 1207        | 99.10%    |
+| 0.90        | 7313       | 811       | 804         | 99.14%    |
 
+# Evaluation
+For evalution of the model let us consider the number of miss classified Mushroom that is Poisounous mushrroms are detected as the Edible
+Mushrooms which is dangerous to health. for this we are using confusion Matrix for each model with Formula as `Edible ~ .`
+
+```r
+x1 <- "Edible ~ Odor"
+x2 <- "Edible ~ CapSurface+CapColor+CapShape"
+x3 <- "Edible ~ CapSurface+CapColor+CapShape+Odor"
+x4 <- "Edible ~ CapColor"
+x5 <- "Edible ~ CapSurface"
+x6 <- "Edible ~ CapShape"
+x7 <- "Edible ~ CapSurface+CapColor+CapShape+Height"
+# Create a data frame with the formulas and predictions
+z <- data.frame(Formula = c(x4,x5,x6,x7,x2,x1,x3,x),
+ Test_data = original_dt,
+ Log_Prediction = my_list_log,
+ Log_accuracy = accuracy_log*100,
+ DT_Predictions = my_list_dt,
+ DT_accuracy = accuracy_dt*100,
+ RF_Predictions = rf_my_list,
+ RF_Accuracy = rf_accuracy*100
+ )
+# Print the table
+kable(z,caption = "Table 7: Prediction and Accuracy with different formulas for all the models",format = "simple")
+```
+Table 7: Prediction and Accuracy with different formulas for all the models
+
+| Formula                                  | Test_data | Log_Prediction | Log_accuracy | DT_Predictions | DT_accuracy | RF_Predictions | RF_Accuracy |
+|------------------------------------------|-----------|----------------|--------------|----------------|-------------|----------------|-------------|
+| Edible ~ CapColor                       | 2436      | 1470           | 60.34%       | 1470           | 60.34%      | 1470           | 60.34%      |
+| Edible ~ CapSurface                     | 2436      | 1436           | 58.95%       | 1436           | 58.95%      | 1436           | 58.94%      |
+| Edible ~ CapShape                       | 2436      | 1377           | 56.53%       | 1377           | 56.53%      | 1377           | 56.52%      |
+| Edible ~ CapSurface+CapColor+CapShape+Height | 2436 | 1638           | 67.24%       | 1711           | 70.24%      | 1712           | 70.27%      |
+| Edible ~ CapSurface+CapColor+CapShape   | 2436      | 1638           | 67.24%       | 1718           | 70.53%      | 1712           | 70.27%      |
+| Edible ~ Odor                           | 2436      | 2395           | 98.32%       | 2395           | 98.32%      | 2395           | 98.31%      |
+| Edible ~ CapSurface+CapColor+CapShape+Odor | 2436   | 2415           | 99.14%       | 2412           | 99.01%      | 2415           | 99.13%      |
+| Edible ~ .                              | 2436      | 2415           | 99.14%       | 2412           | 99.01%      | 2415           | 99.13%      |
+
+# Conclusion:
+In this report we have performed the logistic regression, Decision Tree and Random forest Model with selecting different rows as input and output
+variables, We have fine tunned the Random forest using the number of trees and Decisiion tree using the Complexity parameter value, We further
+performed cross validation technique to observe how the Test and train split can impact the number of correctly predicted values.
+Based, upon the observed analysis I would like to suggest that Logistic regression as the best model since it is giving less Type 1 error which is
+Predicting Mushrrom as edible when it is actually Poisonous campared to Random forest and Decision tree Models
 
 
 
