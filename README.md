@@ -518,6 +518,7 @@ for (i in y){
 ```
 Output:
 Below code give the output of Random Forest algorithm in tabular form using Knitr varaiable and Dataframe.
+
 ```r
 x <- "Edible ~ ."
 x1 <- "Edible ~ Odor"
@@ -527,16 +528,15 @@ x4 <- "Edible ~ CapColor"
 x5 <- "Edible ~ CapSurface"
 x6 <- "Edible ~ CapShape"
 x7 <- "Edible ~ CapSurface+CapColor+CapShape+Height"
-
 # Create a data frame with the formulas and predictions
 z <- data.frame(Formula = c(x4,x5,x6,x7,x2,x1,x3,x),
  Test_data = rf_original,
  Predictions = rf_my_list,
  Accuracy = rf_accuracy*100)
-
 # Print the table
 kable(z,format = "simple",caption = "Table 5: Prediction and Accuracy Random forest with different Formulas")
 ```
+
 Table 5: Prediction and Accuracy Random forest with different Formulas
 | Formula                                  | Test Data | Predictions | Accuracy  |
 |------------------------------------------|-----------|-------------|-----------|
